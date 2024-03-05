@@ -1,3 +1,5 @@
- __pycache__/
+ _pycache__/config.cpython-312.pyc
+authors_app/models/__pycache__/
+__pycache__/
 venv/
 authors_app/__pycache__/
