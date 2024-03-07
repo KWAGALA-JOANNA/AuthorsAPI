@@ -35,7 +35,7 @@ def create_app():
     # testing whether the application works
     @app.route('/')
     def home():
-        return "Hello World"
+        return "Authors API setup"
     
     return app
 
