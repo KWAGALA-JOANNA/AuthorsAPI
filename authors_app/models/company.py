@@ -8,7 +8,7 @@ class Company(db.Model):
     id = db.Column(db.Integer, primary_key=True )
     name = db.Column(db.String(255), nullable=False, unique=True)
     origin = db.Column(db.String(100))
-    description = db.Column(db.String(1000))
+    description = db.Column(db.String(255))
     
     # An author can have more than one company so we create a one to many relationship
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
@@ -23,7 +23,7 @@ class Company(db.Model):
     # company constructors
     # the ID well automatically be included
     def __init__(self, name, origin, description, user_id):
-        # super(Company, self).__int__()
+        super(Company, self).__int__()
         self.name = name
         self.origin = origin
         self.description = description

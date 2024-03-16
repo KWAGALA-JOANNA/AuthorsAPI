@@ -6,7 +6,7 @@ class Book(db.Model):
     title = db.Column(db.String(150), nullable=False)
     description = db.Column(db.String(255), nullable=False)
     price = db.Column(db.Integer, nullable=False)
-    price_unit = db.Column(db.String, nullable=False, default='UGX')
+    price_unit = db.Column(db.String(10), nullable=False, default='UGX')
     # date of book publication
     publication_date =db.Column(db.Date, nullable=False)
     # international standard book number
@@ -26,7 +26,7 @@ class Book(db.Model):
     def __init__(self, title, description, price, price_unit, company_id,user_id, image, genre, publication_date, number_of_pages, isbn):
         # evoking the __init__ method/constructor from the super class Book
         # this ensures that any intialisation of the db.model class is 
-        # super(Book, self).__init__()
+        super(Book, self).__init__()
         self.title = title
         self.description = description
         self.price = price
