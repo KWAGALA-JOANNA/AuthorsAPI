@@ -3,3 +3,5 @@ authors_app/models/__pycache__/
 __pycache__/
 venv/
 authors_app/__pycache__/
+authors_app/controllers/auth/__pycache__/
+migrations/__pycache__/

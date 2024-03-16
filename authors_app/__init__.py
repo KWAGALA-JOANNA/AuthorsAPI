@@ -1,7 +1,8 @@
-from flask import Flask
+from flask import Flask, Blueprint
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-from authors_app.extensions import db,migrate
+from authors_app.extensions import db, migrate, bcrypt
+from authors_app.controllers.auth.auth import auth
 
 
 # Setting up an application factory function and everything must be within the function
@@ -16,7 +17,7 @@ def create_app():
     # Initialising the third-party libraries. we pass in the app and db
     db.init_app (app) 
     migrate.init_app(app, db)
-    # bcrypt.init_app(app)
+    bcrypt.init_app(app)
     # jwt.init_app(app)
     
     # working with migrations
@@ -27,7 +28,9 @@ def create_app():
     from authors_app.models.book import Book
     
     # # registering blueprints
-    # authors_app.register_blueprint(auth)
+     # registering the blueprint auth
+   
+    
     # authors_app.register_blueprint(users)
     # authors_app.register_blueprint(company)
       
@@ -36,7 +39,8 @@ def create_app():
     @app.route('/')
     def home():
         return "Authors API setup"
-    
+
+    app.register_blueprint(auth)
     return app
 
     
