@@ -12,13 +12,13 @@ class User(db.Model ):
     first_name= db.Column(db.String(50), nullable=False)
     last_name= db.Column(db.String(100), nullable=False)
     email= db.Column(db.String(100), nullable=False, unique=True)
-    password= db.Column(db.Text(255), nullable=False)
+    password= db.Column(db.Text, nullable=False)
     contact = db.Column(db.Integer, nullable=False, unique=True)
-    biography = db.Column(db.Text(255), nullable=True)
+    biography = db.Column(db.Text, nullable=True)
     user_type = db.Column(db.String(50), default='author') #author , admin
     image = db.Column(db.String(255), nullable=True)
     # company_id = db.Column(db.Integer, db.ForeignKey('companies.id'))
-    # company = db.relationship('Company', back_populates ='users')
+    # company = db.relationship('Company', backref ='users')
     # books = db.relationship('Book', backref='user')
     
     created_at = db.Column(db.DateTime, default=datetime.now())
@@ -27,7 +27,7 @@ class User(db.Model ):
     # creating a constructor so that new instances and new users are tracked
     
     def __init__(self, first_name, last_name, email, password, contact, biography, user_type, image):
-        super(User, self).__int__()
+        # super(User, self).__int__()
         self.first_name = first_name
         self.last_name = last_name
         self.email = email

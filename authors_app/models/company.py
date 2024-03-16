@@ -23,7 +23,7 @@ class Company(db.Model):
     # company constructors
     # the ID well automatically be included
     def __init__(self, name, origin, description, user_id):
-        super(Company, self).__int__()
+        # super(Company, self).__int__()
         self.name = name
         self.origin = origin
         self.description = description

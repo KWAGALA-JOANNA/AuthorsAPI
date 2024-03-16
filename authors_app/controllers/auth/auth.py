@@ -54,6 +54,31 @@ def register():
         return jsonify({'error': str(e)}), 500
     
     
+    # Define the login endpoint
+@auth.route('/login', methods=["POST"])
+def login():
+    try:
+        # Extract email and password from the request JSON
+        data = request.json
+        email = data.get("email")
+        password = data.get("password")
+
+        # Retrieve the user by email
+        user = User.query.filter_by(email=email).first()
+
+        # Check if the user exists and the password is correct
+        if user and bcrypt.check_password_hash(user.password, password):
+            # Return a success response
+            return jsonify({'message': 'Login successful', 'user_id': user.id}), 200
+        else:
+            # Return an error response if authentication fails
+            return jsonify({'error': 'Invalid email or password'}), 401
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+    
+    
     
     # Define the edit user endpoint
 @auth.route('/edit/<int:user_id>', methods=["PUT"])

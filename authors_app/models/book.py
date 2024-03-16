@@ -26,7 +26,7 @@ class Book(db.Model):
     def __init__(self, title, description, price, price_unit, company_id,user_id, image, genre, publication_date, number_of_pages, isbn):
         # evoking the __init__ method/constructor from the super class Book
         # this ensures that any intialisation of the db.model class is 
-        super(Book, self).__init__()
+        # super(Book, self).__init__()
         self.title = title
         self.description = description
         self.price = price
