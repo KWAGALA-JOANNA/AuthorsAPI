@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 from authors_app.models.user import User, db
-from authors_app.extensions import bcrypt
+from authors_app.extensions import bcrypt, jwt
+from datetime import datetime, timedelta
 
 # Create a blueprint
 auth = Blueprint('auth', __name__, url_prefix='/api/v1/auth')
@@ -53,7 +54,62 @@ def register():
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
     
+    # Define the endpoint to get all users
+@auth.route('/users', methods=["GET"])
+def get_all_users():
+    try:
+        # Query all users from the database
+        users = User.query.all()
+
+        # Serialize users data im other words convert data into a format suitable for storage
+        serialized_users = []
+        for user in users:
+            serialized_user = {
+                'id': user.id,
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'email': user.email,
+                'image': user.image,
+                'biography': user.biography,
+                'user_type': user.user_type,
+                'contact': user.contact
+            }
+            serialized_users.append(serialized_user)
+
+        # Return the serialized users data
+        return jsonify({'users': serialized_users}), 200
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
     
+    # getting a spedific user
+    def get_user(user_id):
+        try:
+            # Query the user from the database by user ID
+            user = User.query.get(user_id)
+
+            # Check if the user exists
+            if user:
+                # Serialize the user data
+                serialized_user = {
+                    'id': user.id,
+                    'first_name': user.first_name,
+                    'last_name': user.last_name,
+                    'email': user.email,
+                    'image': user.image,
+                    'biography': user.biography,
+                    'user_type': user.user_type,
+                    'contact': user.contact
+                }
+                # Return the serialized user data
+                return jsonify({'user': serialized_user}), 200
+            else:
+                return jsonify({'error': 'User not found'}), 404
+
+        except Exception as e:
+            return jsonify({'error': str(e)}), 500
+        
+        
     # Define the login endpoint
 @auth.route('/login', methods=["POST"])
 def login():
@@ -84,13 +140,13 @@ def login():
 @auth.route('/edit/<int:user_id>', methods=["PUT"])
 def edit_user(user_id):
     try:
-        # Extract user data from the request JSON
+        # Extracting user data from the request JSON
         data = request.json
         user = User.query.get(user_id)
         if not user:
             return jsonify({'error': 'User not found'}), 404
 
-        # Update user fields if provided in the request
+        # editing user fields if provided in the request
         if 'first_name' in data:
             user.first_name = data['first_name']
         if 'last_name' in data:
@@ -144,3 +200,35 @@ def delete_user(user_id):
 
 
 
+# Creating tokens for authentication
+
+
+# Secret key for encoding and decoding the token
+# SECRET_KEY = 'A0703b91L08e9K9JV'
+
+# def generate_token(user_id):
+#     try:
+#         # Set the expiration time for the token (e.g., 1 day)
+#         expiration_time = datetime.utcnow() + timedelta(days=1)
+
+        
+#         # payload is a JSON object that contains assertions about the user or any entity
+#         # In this case the payload is containing user_id and expiration time
+#         payload = {
+#             'user_id': user_id,
+#             'exp': expiration_time
+#         }
+
+#         # Encode the payload and create the token jwt(JSON Web Tokens)
+#         # algorithm is the method used for signing and verifying the token
+#         token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
+
+#         return token
+
+#     except Exception as e:
+#         # Handle token generation error
+#         print(f"Token generation failed: {str(e)}")
+
+# # Example usage:
+# # token = generate_token(user_id=123)
+# # print(token)

@@ -63,7 +63,7 @@ def get_book(book_id):
         if not book:
             return jsonify({'error': 'Book not found'}), 404
 
-        return jsonify(book.as_dict())
+        return jsonify({'message': 'Book obtained successfully', 'book_id': book_id}), 201
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500

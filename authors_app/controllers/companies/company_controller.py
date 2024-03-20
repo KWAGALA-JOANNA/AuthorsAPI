@@ -19,9 +19,9 @@ def create_company():
 
         # Validate input data
         if not all([name, origin, user_id]):
-            return jsonify({'error': "Name, origin, and user_id are required fields"}), 400
+            return jsonify({'error': "All fields are required "}), 400
 
-        # Create a new instance of the Company model
+        # Creating a new instance of the Company model
         new_company = Company(
             name=name,
             origin=origin,
@@ -29,10 +29,10 @@ def create_company():
             user_id=user_id
         )
 
-        # Add the new company instance to the database session
+        # Adding a new company instance to the database session
         db.session.add(new_company)
 
-        # Commit the session to save the changes to the database
+        # Committing the session to save the changes to the database
         db.session.commit()
 
         # Return a success response
@@ -43,20 +43,19 @@ def create_company():
         return jsonify({'error': str(e)}), 500
 
 # Define the get company endpoint
-@company_api.route('/<int:company_id>', methods=["GET"])
+@company_api.route('/get/<int:company_id>', methods=["GET"])
 def get_company(company_id):
     try:
         company = Company.query.get(company_id)
         if not company:
             return jsonify({'error': 'Company not found'}), 404
-
-        return jsonify(company.as_dict())
+        return jsonify({'message': 'Company obtained successfully', 'company_id': company_id}), 201
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
 # Define the update company endpoint
-@company_api.route('/<int:company_id>', methods=["PUT"])
+@company_api.route('/edit/<int:company_id>', methods=["PUT"])
 def update_company(company_id):
     try:
         # Extract company data from the request JSON
@@ -80,7 +79,7 @@ def update_company(company_id):
         return jsonify({'error': str(e)}), 500
 
 # Define the delete company endpoint
-@company_api.route('/<int:company_id>', methods=["DELETE"])
+@company_api.route('/delete/<int:company_id>', methods=["DELETE"])
 def delete_company(company_id):
     try:
         company = Company.query.get(company_id)
