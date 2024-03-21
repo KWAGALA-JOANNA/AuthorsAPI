@@ -86,6 +86,7 @@ def get_all_users():
     def get_user(user_id):
         try:
             # Query the user from the database by user ID
+            # trying to get a pecific user by passing in their user_id
             user = User.query.get(user_id)
 
             # Check if the user exists
@@ -119,10 +120,10 @@ def login():
         email = data.get("email")
         password = data.get("password")
 
-        # Retrieve the user by email
+        # Get the user by email
         user = User.query.filter_by(email=email).first()
 
-        # Check if the user exists and the password is correct
+        # Checking if the user exists and the password is correct
         if user and bcrypt.check_password_hash(user.password, password):
             # Return a success response
             return jsonify({'message': 'Login successful', 'user_id': user.id}), 200
