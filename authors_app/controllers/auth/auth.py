@@ -82,8 +82,10 @@ def get_all_users():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
     
+    
+@auth.route('/user/<int:user_id>', methods=["GET"])
     # getting a spedific user
-    def get_user(user_id):
+def get_user(user_id):
         try:
             # Query the user from the database by user ID
             # trying to get a pecific user by passing in their user_id

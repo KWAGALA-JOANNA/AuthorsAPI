@@ -59,6 +59,7 @@ def create_book():
 @book_api.route('/get/<int:book_id>', methods=["GET"])
 def get_book(book_id):
     try:
+        # querying the book by book_id to get a specific book
         book = Book.query.get(book_id)
         if not book:
             return jsonify({'error': 'Book not found'}), 404
