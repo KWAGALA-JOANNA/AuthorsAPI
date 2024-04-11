@@ -11,7 +11,7 @@ class Company(db.Model):
     description = db.Column(db.String(255))
     
     # An author can have more than one company so we create a one to many relationship
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     # backref/back_populates helps the user accessthe different companies
     user = db.relationship('User', backref='companies')
     
@@ -23,13 +23,13 @@ class Company(db.Model):
     # company constructors
     # the ID well automatically be included
     def __init__(self, name, origin, description, user_id):
-        # super(Company, self).__int__()
+        super(Company, self).__init__()
         self.name = name
         self.origin = origin
         self.description = description
         self.user_id = user_id
-    
-#    string representation for the comapanies 
+    pass
+#    string representation for the companies 
     def __repr__(self):
-        return f"{self.name}, {self.origin}"
+        return f"<Company(name='{self.name}', origin='{self.origin}')>"
     

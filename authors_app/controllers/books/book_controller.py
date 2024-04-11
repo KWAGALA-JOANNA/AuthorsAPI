@@ -1,12 +1,19 @@
 from flask import Blueprint, request, jsonify
 from authors_app.models.book import Book, db
 from authors_app.extensions import bcrypt
+from flask_jwt_extended import jwt_required, get_jwt_identity
+# from cryptography.fernet import Fernet, InvalidToken
 
 # Create a blueprint
 book_api = Blueprint('book_api', __name__, url_prefix='/api/v1/books')
 
+
+# Importing status codes
+from authors_app.status_codes import HTTP_400_BAD_REQUEST,HTTP_201_CREATED,HTTP_500_INTERNAL_SERVER_ERROR
+
 # Define the create book endpoint
 @book_api.route('/register', methods=["POST"])
+@jwt_required()
 def create_book():
     try:
         # Extract book data from the request JSON
@@ -20,12 +27,12 @@ def create_book():
         number_of_pages = data.get("number_of_pages")
         genre = data.get("genre")
         image = data.get("image")
-        user_id = data.get("user_id")
+        user_id = get_jwt_identity()
         company_id = data.get("company_id")
 
         # Validate input data
         if not all([title, description, price, price_unit, publication_date, genre]):
-            return jsonify({'error': "All required fields are not provided"}), 400
+            return jsonify({'error': "All required fields are not provided"}), HTTP_400_BAD_REQUEST
 
         # Create a new instance of the Book model
         new_book = Book(
@@ -49,11 +56,30 @@ def create_book():
         db.session.commit()
 
         # Return a success response
-        return jsonify({'message': 'Book created successfully', 'book_id': new_book.id}), 201
+        return jsonify({'message': f"Book '{new_book.title}', ID'{new_book.id}' has been created successfully", 
+                        'book':{
+                            'id':new_book.id,
+                            'title': new_book.title,
+                            'description': new_book.description,
+                            'image': new_book.image,
+                            'price': new_book.price,
+                            'price_unit': new_book.price_unit,
+                            'pages': new_book.number_of_pages,
+                            'publication_date': new_book.publication_date,
+                            'isbn': new_book.isbn,
+                            'genre': new_book.genre,
+                            'user_id': new_book.user_id,
+                            'company_id': new_book.company_id}
+
+            
+            }), HTTP_201_CREATED
 
     except Exception as e:
         db.session.rollback()
-        return jsonify({'error': str(e)}), 500
+        return jsonify({'error': str(e)}), HTTP_500_INTERNAL_SERVER_ERROR
+    
+    
+    
 
 # Define the get book endpoint
 @book_api.route('/get/<int:book_id>', methods=["GET"])
@@ -95,17 +121,20 @@ def update_book(book_id):
 
 # Define the delete book endpoint
 @book_api.route('/delete/<int:book_id>', methods=["DELETE"])
+@jwt_required()
 def delete_book(book_id):
+    
     try:
-        book = Book.query.get(book_id)
-        if not book:
-            return jsonify({'error': 'Book not found'}), 404
-
-        db.session.delete(book)
-        db.session.commit()
+        book_id = Book.query.filter_by(id=id).first()
+        
+        if not book_id:
+            return jsonify({'error': 'Book not found'})
+        else:
+            db.session.delete(book_id)
+            db.session.commit()
 
         return jsonify({'message': 'Book deleted successfully'}), 200
 
     except Exception as e:
         db.session.rollback()
-        return jsonify({'error': str(e)}), 500
+        return jsonify({'error': str(e)}), HTTP_500_INTERNAL_SERVER_ERROR
